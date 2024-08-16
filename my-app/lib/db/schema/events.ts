@@ -12,8 +12,7 @@ export const events = sqliteTable('events', {
   eventName: text("event_name").notNull(),
   date: integer("date", { mode: "timestamp" }).notNull(),
   location: text("location").notNull(),
-  descripti: text("descripti").notNull(),
-  status: text("status").notNull(),
+  description: text("descripti").notNull(),
   organizerId: text("organizer_id").references(() => organizers.id, { onDelete: "cascade" }).notNull()
 });
 

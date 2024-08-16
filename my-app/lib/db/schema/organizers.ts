@@ -11,7 +11,7 @@ export const organizers = sqliteTable('organizers', {
   id: text("id").primaryKey().$defaultFn(() => nanoid()),
   organizerName: text("organizer_name").notNull(),
   trustedContact: text("trusted_contact").notNull(),
-  status: text("status").notNull(),
+  status: text("status").notNull().default("unvalidated"),
   userId: text("user_id").notNull()
 });
 
