@@ -15,7 +15,7 @@ export const tickets = sqliteTable('tickets', {
   groupOfTicketId: text("group_of_ticket_id").references(() => groupOfTickets.id, { onDelete: "cascade" }).notNull(),
   name: text("name").notNull(),
   userEmail: text("user_email").notNull(),
-  status: text("status").notNull(),
+  status: text("status").notNull().default("created"),
   userId: text("user_id").notNull(),
   
   createdAt: text("created_at")

@@ -6,7 +6,6 @@ import { type getCheckinSections } from "@/lib/api/checkinSections/queries";
 
 import { nanoid } from "@/lib/utils";
 
-
 export const checkinSections = sqliteTable('checkin_sections', {
   id: text("id").primaryKey().$defaultFn(() => nanoid()),
   name: text("name").notNull(),

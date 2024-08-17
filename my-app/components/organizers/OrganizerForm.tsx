@@ -13,10 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useBackPath } from "@/components/shared/BackButton";
+import { Input as NextInput } from "@nextui-org/react";
 
 
 
-import { type Organizer, insertOrganizerParams } from "@/lib/db/schema/organizers";
+import { type Organizer, insertOrganizerParams, organizerNameSchema } from "@/lib/db/schema/organizers";
 import {
   createOrganizerAction,
   deleteOrganizerAction,
@@ -25,7 +26,7 @@ import {
 
 
 const OrganizerForm = ({
-  
+
   organizer,
   openModal,
   closeModal,
@@ -33,7 +34,7 @@ const OrganizerForm = ({
   postSuccess,
 }: {
   organizer?: Organizer | null;
-  
+
   openModal?: (organizer?: Organizer) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
@@ -42,14 +43,12 @@ const OrganizerForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Organizer>(insertOrganizerParams);
   const editing = !!organizer?.id;
-  
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
   const backpath = useBackPath("organizers");
-
-
   const onSuccess = (
     action: Action,
     data?: { error: string; values: Organizer },
@@ -70,9 +69,9 @@ const OrganizerForm = ({
 
   const handleSubmit = async (data: FormData) => {
     setErrors(null);
-
+    data.append("status","unvalidated")
     const payload = Object.fromEntries(data.entries());
-    const organizerParsed = await insertOrganizerParams.safeParseAsync({  ...payload });
+    const organizerParsed = await insertOrganizerParams.safeParseAsync({ ...payload });
     if (!organizerParsed.success) {
       setErrors(organizerParsed?.error.flatten().fieldErrors);
       return;
@@ -81,7 +80,7 @@ const OrganizerForm = ({
     closeModal && closeModal();
     const values = organizerParsed.data;
     const pendingOrganizer: Organizer = {
-      
+
       id: organizer?.id ?? "",
       userId: organizer?.userId ?? "",
       ...values,
@@ -99,7 +98,7 @@ const OrganizerForm = ({
 
         const errorFormatted = {
           error: error ?? "Error",
-          values: pendingOrganizer 
+          values: pendingOrganizer
         };
         onSuccess(
           editing ? "update" : "create",
@@ -116,70 +115,30 @@ const OrganizerForm = ({
   return (
     <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
       {/* Schema fields start */}
-              <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.organizerName ? "text-destructive" : "",
-          )}
-        >
-          Organizer Name
-        </Label>
-        <Input
+      <div>
+        <NextInput
           type="text"
+          label="Organizer's Name"
           name="organizerName"
-          className={cn(errors?.organizerName ? "ring ring-destructive" : "")}
+          required
+          isInvalid={errors?.organizerName ? true : false}
+          errorMessage={`${errors?.organizerName}`}
           defaultValue={organizer?.organizerName ?? ""}
         />
-        {errors?.organizerName ? (
-          <p className="text-xs text-destructive mt-2">{errors.organizerName[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
       </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.trustedContact ? "text-destructive" : "",
-          )}
-        >
-          Trusted Contact
-        </Label>
-        <Input
+      <div>
+      <NextInput
           type="text"
+          label="Trusted Contact"
           name="trustedContact"
-          className={cn(errors?.trustedContact ? "ring ring-destructive" : "")}
+          required
+          isInvalid={errors?.trustedContact ? true : false}
+          errorMessage={`${errors?.trustedContact}`}
           defaultValue={organizer?.trustedContact ?? ""}
         />
-        {errors?.trustedContact ? (
-          <p className="text-xs text-destructive mt-2">{errors.trustedContact[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
+        
       </div>
-        <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.status ? "text-destructive" : "",
-          )}
-        >
-          Status
-        </Label>
-        <Input
-          type="text"
-          name="status"
-          className={cn(errors?.status ? "ring ring-destructive" : "")}
-          defaultValue={organizer?.status ?? ""}
-        />
-        {errors?.status ? (
-          <p className="text-xs text-destructive mt-2">{errors.status[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div>
-      {/* Schema fields end */}
+            {/* Schema fields end */}
 
       {/* Save Button */}
       <SaveButton errors={hasErrors} editing={editing} />

@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -21,8 +22,10 @@ export default function Modal({
       <DialogContent>
         <DialogHeader className="px-5 pt-5">
           <DialogTitle>{title ?? "Modal"}</DialogTitle>
+          <DialogDescription>       
+          </DialogDescription>
         </DialogHeader>
-        <div className="px-5 pb-5">{children}</div>
+        <Card className="px-5 pb-5">{children}</Card>
       </DialogContent>
     </Dialog>
   );

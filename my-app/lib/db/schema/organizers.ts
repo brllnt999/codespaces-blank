@@ -11,7 +11,7 @@ export const organizers = sqliteTable('organizers', {
   id: text("id").primaryKey().$defaultFn(() => nanoid()),
   organizerName: text("organizer_name").notNull(),
   trustedContact: text("trusted_contact").notNull(),
-  status: text("status").notNull().default("unvalidated"),
+  status: text("status").default("unvalidated"),
   userId: text("user_id").notNull()
 });
 
@@ -30,6 +30,7 @@ export const updateOrganizerParams = baseSchema.extend({}).omit({
   userId: true
 });
 export const organizerIdSchema = baseSchema.pick({ id: true });
+export const organizerNameSchema = baseSchema.pick({organizerName:true})
 
 // Types for organizers - used to type API request params and within Components
 export type Organizer = typeof organizers.$inferSelect;
